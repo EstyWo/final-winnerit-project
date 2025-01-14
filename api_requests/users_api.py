@@ -9,7 +9,6 @@ api_url = "https://reqres.in/api"
 class UsersApi:
 
     def __init__(self, page: Page):
-       #super().__init__(page)
         self.__page = page
 
     def get_user(self):
