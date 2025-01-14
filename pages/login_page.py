@@ -1,23 +1,30 @@
-from selenium.webdriver.common.by import By
-
-class LoginPage:
-
-    def __init__(self, browser):
-        self.browser = browser
-
-    def open_home_page(self):
-        self.browser.get("https://www.saucedemo.com/")
+from playwright.sync_api import Page, expect
+import allure
+from pages.base_page import BasePage
 
 
-    def type_username(self, username):
-        user_name_input = self.browser.find_element(By.ID, value="user-name")  # id="user-name"
-        user_name_input.clear()
-        user_name_input.send_keys(username)
+class LoginPage(BasePage):
 
-    def type_password(self, password):
-        password_input_field = self.browser.find_element(By.CSS_SELECTOR, value='[data-test="password"]')
-        password_input_field.clear()
-        password_input_field.send_keys(password)
+    def __init__(self, page: Page):
+        super().__init__(page)
+        self.__page = page
+        self.__username_textfield = page.locator("[data-test=\"username\"]")
+        self.__password_textfield = page.get_by_placeholder("Password")
+        self.__login_button = page.get_by_role("button", name="Login")
+        self.__error_message = page.locator("[data-test=\"error\"]")
 
-    def click_login_button(self):
-        self.browser.find_element(By.NAME, value='login-button').click()
+    def navigate_to(self, url: str):
+        with allure.step(f"Navigating to url: {url}"):
+            self.__page.goto(url)
+
+
+    def login_to_application(self, username: str, password: str):
+        with allure.step(f"Login to app with credentials: {username} : {password}"):
+            self.__username_textfield.fill(username, timeout=60000)
+            self.__password_textfield.press_sequentially(password, delay=100)
+            self.__login_button.click()
+
+
+    def validate_error_message(self, error_message: str):
+        with allure.step(f"Validating that error message is: '{error_message}'"):
+            expect(self.__error_message).to_contain_text(error_message)
