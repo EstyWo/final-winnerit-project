@@ -58,7 +58,6 @@ def test_e2e_scenario_a(page: Page, login_page, products_page, cart_page, checko
     checkout_page.logout_app()
     checkout_page.validate_login_page_displayed()
 
-
     # add 3 items to cart, continue checkout,
     # then go back and remove 1 item,
     # then validate the total price and finish
