@@ -1,10 +1,11 @@
 import pytest
 from playwright.sync_api import Page
 
-from api_requests.users_api import UsersApi
+
 from pages.login_page import LoginPage
 from pages.products_page import ProductsPage
-
+from pages.cart_page import CartPage
+from pages.checkout_page import CheckoutPage
 
 @pytest.fixture
 def login_page(page: Page):
@@ -15,7 +16,9 @@ def products_page(page: Page):
     return ProductsPage(page)
 
 @pytest.fixture
-def users_api(page: Page):
-    return UsersApi(page)
+def cart_page(page: Page):
+    return CartPage(page)
 
-
+@pytest.fixture
+def checkout_page(page: Page):
+    return CheckoutPage(page)

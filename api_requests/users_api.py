@@ -2,18 +2,20 @@ import pytest
 import requests
 from playwright.sync_api import Page, expect
 
-api_url = "https://reqres.in/api"
+api_url = "https://reqres.in/api/users/"
 
-
+# URL + endpoint + path
+# users/2
 
 class UsersApi:
 
-    def __init__(self, page: Page):
-        self.__page = page
+    def __init__(self):
+        pass
 
-    def get_user(self):
 
-        response = requests.get(f'{api_url}/users/2')
+    def get_user(self, endpoint:str):
+
+        response = requests.get(f'{api_url}/{endpoint}')
         print(response.json())
         print(response.status_code)
         print(response.reason)

@@ -1,38 +1,17 @@
+import allure
+import pytest
+from allure_commons.types import AttachmentType
 from playwright.sync_api import Page, expect
+from utils import configs
 
-
-def test_standard_user(page: Page):
-    base_url = "https://www.saucedemo.com/"
-    page.goto(base_url)
-    page.locator("[data-test=\"username\"]").fill("standard_user")
-    page.locator("[data-test=\"password\"]").fill("secret_sauce")
-    page.locator("[data-test=\"login-button\"]").click()
-    expect(page).to_have_url(base_url + 'inventory.html')
-    page.wait_for_timeout(2000)
-
-def test_performance_glitch_user(page: Page):
-    base_url = "https://www.saucedemo.com/"
-    page.goto(base_url)
-    page.locator("[data-test=\"username\"]").fill("performance_glitch_user")
-    page.locator("[data-test=\"password\"]").fill("secret_sauce")
-    page.locator("[data-test=\"login-button\"]").click()
-    expect(page).to_have_url(base_url + 'inventory.html')
-    page.wait_for_timeout(2000)
-
-def test_error_user(page: Page):
-    base_url = "https://www.saucedemo.com/"
-    page.goto(base_url)
-    page.locator("[data-test=\"username\"]").fill('error_user')
-    page.locator("[data-test=\"password\"]").fill("secret_sauce")
-    page.locator("[data-test=\"login-button\"]").click()
-    expect(page).to_have_url(base_url + 'inventory.html')
-    page.wait_for_timeout(2000)
-
-def test_visual_user(page: Page):
-    base_url = "https://www.saucedemo.com/"
-    page.goto(base_url)
-    page.locator("[data-test=\"username\"]").fill("visual_user")
-    page.locator("[data-test=\"password\"]").fill("secret_sauce")
-    page.locator("[data-test=\"login-button\"]").click()
-    expect(page).to_have_url(base_url + 'inventory.html')
-    page.wait_for_timeout(2000)
+user_name_list= [configs.standard_user, configs.performance_glitch_user, configs.error_user, configs.visual_user]
+@allure.feature("Login")
+@allure.story("Happy Scenarios")
+@allure.title("4 Happy Scenarios Tests")
+@pytest.mark.parametrize("user_name", user_name_list)
+def test_success_login(page: Page, login_page, user_name):
+    login_page.navigate_to(configs.base_url)
+    login_page.login_to_application(user_name, configs.correct_password)
+    login_page.validate_page_url(configs.base_url + 'inventory.html')
+    allure.attach(page.screenshot(full_page=True), name="screenshot", attachment_type=AttachmentType.PNG)
+    page.wait_for_timeout(3000)
